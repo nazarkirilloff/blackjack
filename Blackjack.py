@@ -19,6 +19,7 @@ class Deck:
 class Player:
 
     def __init__(self, name, money):
+        self.bet = None
         self.name = name
         self.money = money
         self.hand = []
@@ -57,18 +58,20 @@ class Player:
         return count
 
     def bet(self, bet):
+        self.bet = bet
         self.money -= bet
 
 class Game:
 
     def __init__(self):
-        deck = Deck()
         dealer = Player('Dealer', 0)
         player_name = input('Hi! Welcome to the casino "Monte Palace"! We are happy you joined \n '
-                            'our famous Blackjack table. Please type your name \n'
-                            '/////////')
+                            'our famous Blackjack table. We have a common rule of Blackjack wins 3 to 2. \n'
+                            'We offer options to stand, hit or double while playing. \n'
+                            'Please type your name down below.\n'
+                            '>>>>> ')
         player_money = input(f'Great, {player_name}! Please tell us what amount of chips do you want to buy? \n'
-                             '/////////')
+                             '>>>>> ')
         player1 = Player(player_name, player_money)
 
         dealer.draw()
@@ -78,7 +81,26 @@ class Game:
         dealer.dealer_card()
         player1.show_hand()
 
+    def hit(self, player):
+        player.draw()
+        self.check()
+
+    def stand(self):
+        self.dealer_play()
+
+    def double(self):
+        player1.money -= player1.bet
+        palyer1.draw()
+        self.check()
+        self.dealer_play()
+
+    def dealer_play(self):
+        while dealer.count() < 16:
+            dealer.draw()
+        self.end_of_round()
+
     def play_again(self):
+        deck.build_deck()
         dealer.draw()
         player1.draw()
         dealer.draw()
@@ -86,21 +108,31 @@ class Game:
         dealer.dealer_card()
         player1.show_hand()
 
-    def hit(self, player):
-        player.draw()
+    def check(self):
+        if dealer.count() > 21 or player1.count() > 21:
+            self.end_of_round()
+
+    def end_of_round(self):
+        if player1.count() == dealer.count():
+            player1.money += player1.bet
+            print('Ooh, so close! Unfortunately, it is a push. Both you and the dealer got same points. \n'
+                  'You get your bet back and good luck in the next round! \n'
+                  '/////////')
+        elif dealer.count() > 21 >= player1.count():
+            player1.money += 2 * player1.bet
+            print('It seems the dealer got busted! You win and get double your bet back. \n'
+                  'Good luck in the next round! \n'
+                  '/////////')
+        elif player1.count() > 21:
+            print('Unfortunately you got busted. You lose your bet. \n'
+                  'Good luck in the next round! \n'
+                  '/////////')
+        elif player1.count() == 21:
+            player1.money += 2.5 * player1.bet
+            print('Woohoo, you got 21 points! You win 3 to 2 for your Blackjack. \n'
+                  'You are on fire! \n'
+                  '/////////')
 
 
 deck = Deck()
-
-dealer = Player('Dealer', 0)
-dealer.draw()
-dealer.draw()
-dealer.dealer_card()
-
-player1 = Player('Nazar', 100)
-player1.draw()
-player1.draw()
-player1.show_hand()
-
-dealer.show_hand()
-
+game = Game()

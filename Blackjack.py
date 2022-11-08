@@ -1,5 +1,6 @@
 from random import shuffle
 
+
 class Deck:
 
     def __init__(self):
@@ -7,7 +8,8 @@ class Deck:
         self.build_deck()
 
     def build_deck(self):
-        self.deck_to_play = [f'{value} of {suit}' for suit in ['Spades', 'Clubs', 'Diamonds', 'Hearts'] for value in [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace']]
+        self.deck_to_play = [f'{value} of {suit}' for suit in ['Spades', 'Clubs', 'Diamonds', 'Hearts'] for value in
+                             [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace']]
         shuffle(self.deck_to_play)
 
     def show(self):
@@ -16,11 +18,12 @@ class Deck:
     def draw(self):
         return self.deck_to_play.pop(0)
 
+
 class Player:
 
     def __init__(self, name, money):
         self.bet = None
-        self.insurance_bet = None
+        self.insurance_bet = 0
         self.name = name
         self.money = money
         self.hand = []
@@ -62,28 +65,17 @@ class Player:
         self.bet = bet
         self.money -= bet
 
+
 class Game:
 
     def __init__(self):
-        dealer = Player('Dealer', 0)
-        player_name = input('Hi! Welcome to the casino "Monte Palace"! We are happy you joined \n'
-                            'our famous Blackjack table. We have a common rule "Blackjack wins 3 to 2". \n'
-                            'We offer options to stand, hit or double while playing. \n'
-                            'Please type your name down below.\n'
-                            '>>>>> ')
-
-        player_money = int(input(f'Great, {player_name}! Please tell us what amount of chips do you want to buy? \n'
-                             '>>>>> '))
-        while type(player_money) != int or player_money < 0:
-            player_money = int(input(f'Great, {player_name}! Please tell us what amount of chips do you want to buy? \n'
-                             '>>>>> '))
-        player1 = Player(player_name, player_money)
-
-        first_bet = int(input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
-                          '>>>>> '))
+        first_bet = int(
+            input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
+                  '>>>>> '))
         while type(first_bet) != int or first_bet > player1.money:
-            first_bet = int(input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
-                          '>>>>> '))
+            first_bet = int(
+                input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
+                      '>>>>> '))
         player1.make_bet(first_bet)
 
         dealer.draw()
@@ -95,13 +87,13 @@ class Game:
 
         if dealer.hand[0][0:2] == 'Ac':
             if player1.money != 0:
-                game.insurance()
+                self.insurance()
             else:
                 print("Unfortunately your don't have sufficient funds to make an insurance bet,\n"
                       "so you will have to continue playing with your bet\n"
                       "/////////")
 
-        game.continue_round()
+        self.continue_round()
 
     def hit(self, player):
         player.draw()
@@ -135,13 +127,17 @@ class Game:
         self.end_of_round()
 
     def play_again(self):
+        player1.hand = []
+        player1.insurance_bet = 0
+
         deck.build_deck()
 
         new_bet = int(input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
-                          '>>>>> '))
+                            '>>>>> '))
         while type(new_bet) != int or new_bet > player1.money:
-            new_bet = int(input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
-                '>>>>> '))
+            new_bet = int(
+                input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
+                      '>>>>> '))
         player1.make_bet(new_bet)
 
         dealer.draw()
@@ -153,34 +149,37 @@ class Game:
 
         if dealer.hand[0][0:2] == 'Ac':
             if player1.money != 0:
-                game.insurance()
+                self.insurance()
             else:
                 print("Unfortunately your don't have sufficient funds to make an insurance bet,\n"
                       "so you will have to continue playing with your bet\n"
                       "/////////")
 
-        game.continue_round()
+        self.continue_round()
 
     def check(self):
-        if dealer.count() > 21 or player1.count() > 21:
+        if player1.count() > 21:
             self.end_of_round()
         self.continue_round()
 
     def continue_round(self):
-        possible = {'hit': game.hit(player1), 'Hit': game.hit(player1), 'stand': game.stand(), 'Stand': game.stand(), 'double': game.double(), 'Double': game.double()}
+        possible = {'hit': self.hit(player1), 'Hit': self.hit(player1), 'stand': self.stand(), 'Stand': self.stand(),
+                    'double': self.double(), 'Double': self.double()}
         continue_round = None
         while continue_round not in possible:
             continue_round = str(input('Please, type down your next move (hit, stand or double) \n'
-                  '>>>>> '))
-        player1.continue_round.lower()
+                                       '>>>>> '))
 
+    # Check every possible ending of the round.
     def end_of_round(self):
         if player1.insurance_bet > 0:
             if dealer.count() == 21:
-                print('The dealer has a blackjack and your insurance bet won.')
+                print('The dealer has a blackjack and your insurance bet won.\n'
+                      '/////////')
                 player1.money += 2 * player1.insurance_bet
             else:
-                print("The dealer didn't have a blackjack, you lost your insurance bet.")
+                print("The dealer didn't have a blackjack, you lost your insurance bet.\n"
+                      "/////////")
 
         if dealer.count() > 21 >= player1.count():
             player1.money += 2 * player1.bet
@@ -202,16 +201,45 @@ class Game:
                   'You are on fire! \n'
                   '/////////')
         elif player.count() > dealer.count():
+            player1.money += 2 * player1.bet
+            print('You won and get the 2 times your bet back. Congratulations!\n'
+                  '/////////')
+        else:
             pass
 
-        if player.money > 0:
-            decision = input('Do you want to continue the game? Print "yes" to continue.')
+        if player1.money > 0:
+            decision = input('Do you want to continue the game? Print "yes" to continue.\n'
+                             '>>>>> ')
             if decision in ['yes', 'Yes']:
-                game.play_again()
+                self.play_again()
             else:
                 print(f'We are sorry to see you go {player1.name})-:\n'
-                      'Anyway')
+                      'Anyway thank you for visiting "Monte Palace" casino.\n'
+                      'We hope to see you again soon!')
+
+        if player.money == 0:
+            print("It seems that unfortunately you don't have more chips to play.\n"
+                  'We will gladly see on your next visit to "Monte Palace" casino!')
 
 
+# The first things needed to start the game.
 deck = Deck()
+
+dealer = Player('Dealer', 0)
+
+player_name = input('Hi! Welcome to the casino "Monte Palace"! We are happy you joined \n'
+                    'our famous Blackjack table. We have a common rule "Blackjack wins 3 to 2". \n'
+                    'We offer options to stand, hit or double while playing. \n'
+                    'Please type your name down below.\n'
+                    '>>>>> ')
+
+player_money = int(input(f'Great, {player_name}! Please tell us what amount of chips do you want to buy? \n'
+                         '>>>>> '))
+
+while type(player_money) != int or player_money < 0:
+    player_money = int(input(f'Great, {player_name}! Please tell us what amount of chips do you want to buy? \n'
+                             '>>>>> '))
+
+player1 = Player(player_name, player_money)
+
 game = Game()

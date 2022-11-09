@@ -1,6 +1,5 @@
 from random import shuffle
 
-
 class Deck:
 
     def __init__(self):

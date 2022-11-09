@@ -46,7 +46,7 @@ Jack, Queen and King give 10 points.
 also have Blackjack 
 
 6) If player wins vs Dealer not with Blackjack or Dealer got
->21 points, he wins 2x bet.
+more than 21 points, he wins 2x bet.
 
 7) Bets are placed by the player before cards are given.
 

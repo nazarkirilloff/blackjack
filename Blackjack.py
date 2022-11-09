@@ -253,7 +253,7 @@ player_name = input('Hi! Welcome to the casino "Monte Palace"! We are happy you 
 player_money = round(int(input(f'Great, {player_name}! Please tell us what amount of chips do you want to buy? \n'
                                '>>>>> ')))
 
-while type(player_money) != int or player_money < 0:
+while type(player_money) != int or player_money <= 0:
     player_money = round(int(input(f'Great, {player_name}! Please tell us what amount of chips do you want to buy? \n'
                                    '>>>>> ')))
 

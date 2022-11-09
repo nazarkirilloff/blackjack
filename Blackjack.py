@@ -1,6 +1,5 @@
 from random import shuffle
 
-
 class Deck:
 
     def __init__(self):
@@ -65,10 +64,10 @@ class Player:
         self.bet = bet
         self.money -= bet
 
-
 class Game:
 
     def __init__(self):
+
         first_bet = int(
             input(f'''Let's get started! Please make your bet. Currently you have {player1.money} chips. \n'''
                   '>>>>> '))
@@ -97,6 +96,7 @@ class Game:
 
     def hit(self, player):
         player.draw()
+        player.show_hand()
         self.check()
 
     def stand(self):
@@ -129,6 +129,7 @@ class Game:
     def play_again(self):
         player1.hand = []
         player1.insurance_bet = 0
+        dealer.hand = []
 
         deck.build_deck()
 
@@ -158,20 +159,28 @@ class Game:
         self.continue_round()
 
     def check(self):
-        if player1.count() > 21:
+        if player1.count() >= 21:
             self.end_of_round()
         self.continue_round()
 
     def continue_round(self):
-        possible = {'hit': self.hit(player1), 'Hit': self.hit(player1), 'stand': self.stand(), 'Stand': self.stand(),
-                    'double': self.double(), 'Double': self.double()}
         continue_round = None
-        while continue_round not in possible:
+        while continue_round not in ['Hit', 'hit', 'Stand', 'stand', 'Double', 'double']:
             continue_round = str(input('Please, type down your next move (hit, stand or double) \n'
                                        '>>>>> '))
 
+        if continue_round.lower() == 'hit':
+            self.hit(player1)
+        elif continue_round.lower() == 'stand':
+            self.stand()
+        else:
+            self.double()
+
     # Check every possible ending of the round.
     def end_of_round(self):
+        dealer.show_hand()
+        player1.show_hand()
+
         if player1.insurance_bet > 0:
             if dealer.count() == 21:
                 print('The dealer has a blackjack and your insurance bet won.\n'
@@ -181,7 +190,12 @@ class Game:
                 print("The dealer didn't have a blackjack, you lost your insurance bet.\n"
                       "/////////")
 
-        if dealer.count() > 21 >= player1.count():
+        if player1.count() == 21 and dealer.count() != 21:
+            player1.money += 2.5 * player1.bet
+            print('Woohoo, you got 21 points! You win 3 to 2 for your Blackjack. \n'
+                  'You are on fire! \n'
+                  '/////////')
+        elif dealer.count() > 21 >= player1.count():
             player1.money += 2 * player1.bet
             print('It seems the dealer got busted! You win and get double your bet back. \n'
                   'Good luck in the next round! \n'
@@ -195,29 +209,26 @@ class Game:
             print('Ooh, so close! Unfortunately, it is a push. Both you and the dealer got same points. \n'
                   'You get your bet back and good luck in the next round! \n'
                   '/////////')
-        elif player1.count() == 21:
-            player1.money += 2.5 * player1.bet
-            print('Woohoo, you got 21 points! You win 3 to 2 for your Blackjack. \n'
-                  'You are on fire! \n'
-                  '/////////')
-        elif player.count() > dealer.count():
+        elif player1.count() > dealer.count():
             player1.money += 2 * player1.bet
             print('You won and get the 2 times your bet back. Congratulations!\n'
                   '/////////')
         else:
-            pass
+            print('Unfortunately you lost. You bet goes to casino. \n'
+                  'Good luck in the next round! \n'
+                  '/////////')
 
         if player1.money > 0:
             decision = input('Do you want to continue the game? Print "yes" to continue.\n'
                              '>>>>> ')
-            if decision in ['yes', 'Yes']:
+            if decision in ['yes', 'Yes', 'yess', 'Yess']:
                 self.play_again()
             else:
                 print(f'We are sorry to see you go {player1.name})-:\n'
                       'Anyway thank you for visiting "Monte Palace" casino.\n'
                       'We hope to see you again soon!')
 
-        if player.money == 0:
+        if player1.money == 0:
             print("It seems that unfortunately you don't have more chips to play.\n"
                   'We will gladly see on your next visit to "Monte Palace" casino!')
 

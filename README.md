@@ -1,5 +1,7 @@
 # blackjack
 
+It is my first Python project)
+
 BLACKJACK Project
 Lets you play text-based blackjack for 1 player vs casino.
 

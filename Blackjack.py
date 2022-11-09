@@ -124,10 +124,8 @@ class Game:
                     '>>>>> ')
             player1.bet(insurance_bet)
         else:
-            print('Unfortunately you do not have any sufficient funds to make an insurance bet.\n'
-                  'You will have to play with your current bet.\n'
+            print('You will play with your current bet.\n'
                   '/////////')
-
     def dealer_play(self):
         dealer.show_hand()
         while dealer.count() < 16:
